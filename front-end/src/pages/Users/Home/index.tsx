@@ -9,7 +9,11 @@ const HomeUser = () => {
   return (
     <section className={styles.home}>
       <div className={container.container}>
-        <Heading label="Welcome" size="xl" className={styles.heading} />
+        <Heading
+          label="Chào mừng bạn đã đến với Jollibee"
+          size="xl"
+          className={styles.heading}
+        />
         <p className={styles.description}>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo,
           veniam officia. Sapiente, similique. Sapiente odit blanditiis labore

@@ -84,12 +84,12 @@ const UserPage = () => {
 
       return {
         _id,
-        fullName,
-        'phone number': phoneNumber,
+        Tên: fullName,
+        'Số điện thoại': phoneNumber,
         email,
-        action: (
+        '': (
           <Button
-            label={deleted ? 'active' : 'delete'}
+            label={deleted ? 'hoạt động' : 'Tạm ngừng'}
             size="small"
             variant={!deleted ? 'primary' : 'success'}
             className={styles.btnDetail}

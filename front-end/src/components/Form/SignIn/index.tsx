@@ -19,6 +19,7 @@ import { Xletter } from 'assets/icons';
 const SignIn = ({ onClick, onChangeForm }: FormProps) => {
   const {
     user: { email, password } = { email: '', password: '' },
+    errorField,
     changeData,
     signIn,
   } = useUser({
@@ -49,30 +50,46 @@ const SignIn = ({ onClick, onChangeForm }: FormProps) => {
           </div>
           <Heading label={TITLE.SIGNIN} className={styles.heading} size="xl" />
           <div className={styles.formFields}>
-            <Input
-              className={styles.input}
-              value={email}
-              placeholder="Enter email..."
-              name="email"
-              onChange={changeData}
-            />
-            <Input
-              className={styles.input}
-              type="password"
-              value={password}
-              placeholder="Ender password..."
-              name="password"
-              onChange={changeData}
-            />
+            <div
+              className={
+                errorField.email
+                  ? `${styles.input} ${styles.error}`
+                  : styles.input
+              }
+              data-error={errorField.email}
+            >
+              <Input
+                value={email}
+                placeholder="Nhập email..."
+                name="email"
+                onChange={changeData}
+              />
+            </div>
+            <div
+              className={
+                errorField.password
+                  ? `${styles.input} ${styles.error}`
+                  : styles.input
+              }
+              data-error={errorField.password}
+            >
+              <Input
+                type="password"
+                value={password}
+                placeholder="Nhập password..."
+                name="password"
+                onChange={changeData}
+              />
+            </div>
           </div>
         </div>
         <div className={styles.formGroup}>
           <div className={styles.action}>
-            <Button type="submit" label="SignIn" variant="primary" />
+            <Button type="submit" label="Đăng nhập" variant="primary" />
             <p className={styles.text}>
-              If you {"don't"} have an account,{' '}
+              Nếu bạn chưa có tài khoản thì nhấn{' '}
               <span className={styles.redirect} onClick={onChangeForm}>
-                click here
+                vào đây
               </span>
               .
             </p>

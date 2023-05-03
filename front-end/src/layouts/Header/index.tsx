@@ -18,6 +18,7 @@ import headerStyles from './index.module.css';
 
 // Assets
 import { Logo, User } from 'assets/images';
+import { ROUTES } from '@constants';
 
 type Headerprops = {
   categories: Category[];
@@ -38,7 +39,7 @@ const Header = (props: Headerprops) => {
             return (
               <li key={category._id} className={headerStyles.navItem}>
                 <NavLink
-                  to={`/${category.name.replaceAll(' ', '-')}`}
+                  to={`/${ROUTES.MENU}/${category._id}`}
                   className={({ isActive }) =>
                     !isActive
                       ? headerStyles.navlink
@@ -61,7 +62,7 @@ const Header = (props: Headerprops) => {
       ) : (
         <div className={headerStyles.action}>
           <Button
-            label="SignIn"
+            label="Đăng nhập"
             variant="secondary"
             onClick={() => openForm()}
           />

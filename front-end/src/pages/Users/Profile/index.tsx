@@ -99,7 +99,7 @@ const Profile = () => {
 
   return (
     <section className={styles.profile}>
-      <Heading label="Account details" size="xl" />
+      <Heading label="Chi tiết thông tin" size="xl" />
       <div className={styles.information}>
         <div
           className={
@@ -107,7 +107,7 @@ const Profile = () => {
           }
           data-error={isError.fullName || ''}
         >
-          <label className={styles.field}>Full name</label>
+          <label className={styles.field}>Tên</label>
           <Input
             className={styles.value}
             value={user.fullName}
@@ -136,7 +136,7 @@ const Profile = () => {
           }
           data-error={isError.phoneNumber || ''}
         >
-          <label className={styles.field}>Phone number</label>
+          <label className={styles.field}>Số điện thoại</label>
           <Input
             type="number"
             className={styles.value}
@@ -146,7 +146,7 @@ const Profile = () => {
           />
         </div>
         <div className={styles.item}>
-          <Button label="save" variant="success" onClick={update} />
+          <Button label="lưu" variant="success" onClick={update} />
         </div>
       </div>
     </section>

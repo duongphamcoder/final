@@ -1,4 +1,5 @@
 export type OrderDetail = {
+  _id: string;
   orderId: string;
   productId: string;
   price: number;

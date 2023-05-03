@@ -33,7 +33,7 @@ const Table = <T extends { _id: string | undefined; [key: string]: any }>(
             }
 
             return (
-              <td key={index} className={styles.colItem}>
+              <td key={`${row._id}${index}`} className={styles.colItem}>
                 {row[col]}
               </td>
             );

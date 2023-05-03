@@ -78,7 +78,7 @@ const Deliver = () => {
                 {convertTimeStringToDate(i.createdAt)}
               </p>
               <div className={styles.status}>
-                <span>Status:</span>
+                <span>Trạng thái:</span>
                 <Status status={i.status as StatusType} />
               </div>
             </div>
@@ -99,7 +99,7 @@ const Deliver = () => {
             </div>
 
             <p className={styles.total}>
-              <span className={styles.totalText}>Total:</span>
+              <span className={styles.totalText}>Tổng tiền:</span>
               <span className={styles.totalValue}>{convertVND(i.total)}</span>
             </p>
           </div>

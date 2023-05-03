@@ -16,7 +16,7 @@ const SideBar = () => {
 
   return (
     <aside className={style.sidebar}>
-      <Heading label="Welcome!" size="xl" className={style.heading} />
+      <Heading label="Xin chào!" size="xl" className={style.heading} />
       <ul className={style.list}>
         <li className={style.item}>
           <NavLink
@@ -25,7 +25,7 @@ const SideBar = () => {
               isActive ? `${style.itemLink} ${style.active}` : style.itemLink
             }
           >
-            Account details
+            Thông tin khách hàng
           </NavLink>
         </li>
         <li className={style.item}>
@@ -35,7 +35,7 @@ const SideBar = () => {
               isActive ? `${style.itemLink} ${style.active}` : style.itemLink
             }
           >
-            Orders
+            Đơn đã mua
           </NavLink>
         </li>
         <li className={style.item}>
@@ -45,7 +45,7 @@ const SideBar = () => {
               isActive ? `${style.itemLink} ${style.active}` : style.itemLink
             }
           >
-            Delivering
+            Đang giao
           </NavLink>
         </li>
         <li className={style.item}>
@@ -60,7 +60,7 @@ const SideBar = () => {
               return window.location.replace(ROUTES.ROOT);
             }}
           >
-            Log out
+            Đăng xuất
           </NavLink>
         </li>
       </ul>

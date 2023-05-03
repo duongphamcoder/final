@@ -15,10 +15,11 @@ import { NotificationContext } from 'contexts/Notification/context';
 import { axiosConfig, validate } from 'helpers';
 
 // Constants
-import { ENDPOINT, MESSAGES, REGEXPS, STORE_KEY } from '@constants';
+import { ENDPOINT, MESSAGES, REGEXPS, STORE_KEY, TITLE } from '@constants';
 
 // Types
 import { User } from 'types';
+import { AxiosError } from 'axios';
 
 type UseUser = {
   initialize?: Partial<User>;
@@ -31,10 +32,13 @@ export const useUser = ({
 }: UseUser) => {
   const { isUser, action, openForm, changeForm } = useContext(UserContext);
   const { setNotification } = useContext(NotificationContext);
-  const [user, setUser] = useState<Partial<User> | undefined>(initialize);
   const { setValueKey } = useStore(
     endpoint === ENDPOINT.LOGIN_USER ? STORE_KEY.TOKEN : STORE_KEY.ADMIN_TOKEN
   );
+  const [user, setUser] = useState<Partial<User> | undefined>(initialize);
+  const [errorField, setErrorField] = useState<{
+    [key: string]: string;
+  }>({});
 
   const changeData = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,16 +54,21 @@ export const useUser = ({
       e.preventDefault();
       const value = user as Required<User>;
 
-      const { isError } = validate({
+      const { fields, isError } = validate({
         object: value,
+        regexp: {
+          email: {
+            regexp: REGEXPS.EMAIL,
+            message: MESSAGES.EMAIL_FORMAT,
+          },
+          password: {
+            regexp: REGEXPS.PASSWORD,
+            message: MESSAGES.PASSWORD_FORMAT,
+          },
+        },
       });
 
-      if (isError)
-        return setNotification({
-          message: 'Please enter a required',
-          title: 'Error',
-          type: 'error',
-        });
+      if (isError) return setErrorField(fields);
 
       axiosConfig
         .post(endpoint, user)
@@ -71,11 +80,12 @@ export const useUser = ({
 
           return openForm(false);
         })
-        .catch((error) => {
-          const { data } = error.response;
+        .catch((data) => {
+          const { data: error } = data.response as AxiosError;
+
           setNotification({
-            message: data.message,
-            title: 'Error',
+            message: error.message,
+            title: TITLE.error,
             type: 'error',
           });
         });
@@ -88,16 +98,21 @@ export const useUser = ({
       e.preventDefault();
       const value = user as Required<User>;
 
-      const { isError } = validate({
+      const { isError, fields } = validate({
         object: value,
+        regexp: {
+          email: {
+            regexp: REGEXPS.EMAIL,
+            message: MESSAGES.EMAIL_FORMAT,
+          },
+          password: {
+            regexp: REGEXPS.PASSWORD,
+            message: MESSAGES.PASSWORD_FORMAT,
+          },
+        },
       });
 
-      if (isError)
-        return setNotification({
-          message: 'Please enter a required',
-          title: 'Error',
-          type: 'error',
-        });
+      if (isError) return setErrorField(fields);
 
       axiosConfig
         .post(endpoint, user)
@@ -109,11 +124,12 @@ export const useUser = ({
 
           return window.location.replace(`/${ENDPOINT.ADMIN_ROOT}`);
         })
-        .catch((error) => {
-          const { data } = error.response;
+        .catch((data) => {
+          const { data: error } = data.response as AxiosError;
+
           setNotification({
-            message: data.message,
-            title: 'Error',
+            message: error.message,
+            title: TITLE.error,
             type: 'error',
           });
         });
@@ -129,22 +145,25 @@ export const useUser = ({
 
       console.log(user);
 
-      const { isError } = validate({
+      const { isError, fields } = validate({
         object: value,
         regexp: {
           phoneNumber: {
             regexp: REGEXPS.PHONE,
             message: MESSAGES.PHONE_FORMAT,
           },
+          email: {
+            regexp: REGEXPS.EMAIL,
+            message: MESSAGES.EMAIL_FORMAT,
+          },
+          password: {
+            regexp: REGEXPS.PASSWORD,
+            message: MESSAGES.PASSWORD_FORMAT,
+          },
         },
       });
 
-      if (isError)
-        return setNotification({
-          message: 'Please enter a required',
-          title: 'Error',
-          type: 'error',
-        });
+      if (isError) return setErrorField(fields);
 
       axiosConfig
         .post(ENDPOINT.SIGNUP, user)
@@ -169,6 +188,7 @@ export const useUser = ({
   return {
     isUser,
     user,
+    errorField,
     changeData,
     signIn,
     signInWithAdmin,

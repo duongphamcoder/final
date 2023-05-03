@@ -6,28 +6,34 @@ export enum STORE_KEY {
 }
 
 export enum TITLE {
-  SIGNIN = 'singin',
-  SIGNUP = 'singup',
-  error = 'Error',
-  SUCCESS = 'Success',
+  SIGNIN = 'Đăng nhập',
+  SIGNUP = 'Đăng ký',
+  error = 'Lỗi',
+  SUCCESS = 'Thành công',
+  UPDATE = 'Cập nhật',
+  DEL = 'Xóa',
+  ADD = 'Thêm',
 }
 
 export enum MESSAGES {
-  ALREADY_EXIST = 'already exists ',
-  SIGNUP_SUCCESS = 'Signup success ',
-  ERROR = 'Something went wrong',
-  EMPTY_TITLE = 'Oops! Nothing match with your keyword!',
-  EMPTY_DESCRIPTION = 'You can search with other keyword or add another new book',
-  ERROR_TITLE = 'Oops! Something went wrong',
-  ERROR_DESCRIPTION = 'Please, help me reload pages.',
-  UPLOAD_IMAGE_FAILED = 'An error occurred while uploading the image',
-  UPDATE_SUCCESS = 'Updated successfully',
-  ADD_SUCCESS = 'Added successfully',
-  EMPTY_PRODUCT = 'There are currently no products in this category!',
-  PHONE_FORMAT = 'Please enter a 10-digit phone number.',
-  IS_QUIRE = 'Please, enter full information',
-  EMPTY_ORDER = "You don't have any orders yet.",
-  EMPTY_DELIVERY = 'Place an order.',
+  ALREADY_EXIST = 'Đã tồn tại',
+  SIGNUP_SUCCESS = 'Đăng ký thành công',
+  ERROR = 'Đã xãy ra một lỗi không mong muốn',
+  EMPTY_TITLE = 'Oops! Không có giá trị nào phù hợp!',
+  EMPTY_DESCRIPTION = 'Bạn có thể tìm kiếm bằng từ khóa',
+  ERROR_TITLE = 'Oops! Đã xãy ra lỗi không mong muốn',
+  ERROR_DESCRIPTION = 'Vui lòng tải lại trang.',
+  UPLOAD_IMAGE_FAILED = 'Đã có lỗi xẩy ra trong khi đăng ảnh',
+  UPDATE_SUCCESS = 'Cập nhật thành công',
+  ADD_SUCCESS = 'Thêm thành công',
+  EMPTY_PRODUCT = 'Hiện không có sản phẩm nào phù hợp!',
+  PHONE_FORMAT = 'Vui lòng nhập 10 ký tự.',
+  EMAIL_FORMAT = 'Vui lòng nhập đúng định dạng email.',
+  PASSWORD_FORMAT = 'Vui lòng nhập tối thiểu 6 kí tự.',
+  IS_QUIRE = 'Vui lòng điền đầy đủ thông tin',
+  EMPTY_ORDER = 'Bạn không có đơn hàng nào.',
+  EMPTY_DELIVERY = 'Hãy đặt hàng.',
+  NO_DATA = 'Không có dữ liệu.',
 }
 
 export enum ROUTES {
@@ -41,6 +47,7 @@ export enum ROUTES {
   ADMIN_PRODUCTS = 'products',
   ADMIN_USERS = 'users',
   ADMIN_CATEGORIES = 'categories',
+  MENU = 'menu',
 }
 
 export enum ENDPOINT {
@@ -66,15 +73,18 @@ export enum SEARCH_PARAMS {
 }
 
 export enum STATISTICAL_TITLE {
-  TOTAL_REVENUE = 'total revenue',
-  NUMBER_OF_ORDERS_PROCESSED = 'number of orders processed',
-  ORDER_IS_BEING_PROCESSED = 'ordering is being processed',
+  TOTAL_REVENUE = 'Tổng thu nhập',
+  NUMBER_OF_ORDERS_PROCESSED = 'Số đơn giao thành công',
+  ORDER_IS_BEING_PROCESSED = 'Số đơn chờ xử lý',
 }
 
 export const REGEXPS: Readonly<{
   [key: string]: RegExp;
 }> = {
   PHONE: /(84|0[3|5|7|8|9])+([0-9]{8})\b/,
+  // eslint-disable-next-line no-useless-escape
+  EMAIL: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+  PASSWORD: /^[a-zA-Z0-9]{6,}$/,
 };
 
 export const RECORD = 4;

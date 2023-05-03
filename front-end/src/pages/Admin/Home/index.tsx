@@ -1,6 +1,7 @@
 import { ChangeEvent, memo, useCallback, useMemo, useState } from 'react';
-import { useFetch, usePagination, useStore } from 'hooks';
+import { usePagination, useStore } from 'hooks';
 import { Link } from 'react-router-dom';
+import useSwR from 'swr';
 
 // HOCs
 import { withErrorBoundary, withReturnUser } from 'HOCS';
@@ -13,11 +14,13 @@ import {
   OrderDetailType,
   StatusType,
   Loading,
+  ShowMessage,
 } from 'components';
 
 // Constants
 import {
   ENDPOINT,
+  MESSAGES,
   SEARCH_PARAMS,
   STATISTICAL_TITLE,
   STORE_KEY,
@@ -67,9 +70,11 @@ const AdminHome = () => {
   };
 
   // Home data
-  const { data, isLoading, setData } = useFetch<AdminHomeResponse>(
+  const { data, isLoading, mutate } = useSwR<AdminHomeResponse>(
     ENDPOINT.ADMIN_HOME,
-    config
+    {
+      fetcher: (endpoint: string) => get(endpoint, config),
+    }
   );
 
   const [filter, setFilter] = useState<{
@@ -83,17 +88,7 @@ const AdminHome = () => {
   });
 
   // Data order details
-  const [details, setDetails] = useState<
-    | (Omit<OrderDetailType, 'productName'> &
-        {
-          productId: {
-            _id: string;
-            name: string;
-          };
-          _id: string;
-        }[])
-    | undefined
-  >();
+  const [details, setDetails] = useState<OrderDetailType[] | undefined>();
 
   // Order current data
   const [order, setOrder] = useState<{
@@ -120,16 +115,10 @@ const AdminHome = () => {
 
   const handleShowDetail = useCallback(async (oid: string) => {
     try {
-      const response = await get<
-        Omit<OrderDetailType, 'productName'> &
-          {
-            productId: {
-              _id: string;
-              name: string;
-            };
-            _id: string;
-          }[]
-      >(`${ENDPOINT.ORDER_DETAIL}/${oid}`, config);
+      const response = await get<OrderDetailType[]>(
+        `${ENDPOINT.ORDER_DETAIL}/${oid}`,
+        config
+      );
 
       setDetails(response);
       setOrder((prev) => ({
@@ -153,42 +142,37 @@ const AdminHome = () => {
   const handleChangeStatus = useCallback(
     async (status: StatusType) => {
       try {
-        const od = (data?.orders || []).find((i) => i._id === order.orderId);
+        handleCloseDetail();
 
-        if (od) {
-          od.status = status;
+        mutate(
+          async () =>
+            await axiosConfig.patch(
+              `${ENDPOINT.ORDER}/${order.orderId}`,
+              {
+                status,
+              },
+              config
+            ),
+          {
+            optimisticData: (current) => {
+              if (current?.orders) {
+                const arr: Order[] = current?.orders || [];
+                const _order = arr.find((x) => x._id === order.orderId);
+                if (_order) {
+                  _order.status = status;
 
-          setData(() => {
-            if (data) {
-              if (status === 3) {
-                data.statisticalData[0].value =
-                  data.statisticalData[0].value + od.total;
-
-                data.statisticalData[1].value =
-                  data.statisticalData[1].value + 1;
-
-                data.statisticalData[2].value =
-                  data.statisticalData[2].value - 1;
+                  return {
+                    statisticalData: current?.statisticalData || [],
+                    orders: current?.orders || [],
+                  };
+                }
               }
 
-              return {
-                ...data,
-                statisticalData: [...data.statisticalData],
-                orders: [...(data?.orders || [])],
-              };
-            }
+              return current as AdminHomeResponse;
+            },
 
-            return data;
-          });
-          handleCloseDetail();
-        }
-
-        await axiosConfig.patch(
-          `${ENDPOINT.ORDER}/${order.orderId}`,
-          {
-            status,
-          },
-          config
+            populateCache: false,
+          }
         );
       } catch (error) {
         throw error as AxiosError;
@@ -206,8 +190,6 @@ const AdminHome = () => {
     if (!filter.orderStart && !filter.orderEnd) return _data;
 
     if (filter.orderStart && !filter.orderEnd) {
-      console.log('Start');
-
       return _data.filter((i) => {
         const date = new Date(convertDateToString(new Date(i.createdAt)));
 
@@ -216,8 +198,6 @@ const AdminHome = () => {
     }
 
     if (!filter.orderStart && filter.orderEnd) {
-      console.log('end');
-
       return _data.filter((i) => {
         const date = new Date(convertDateToString(new Date(i.createdAt)));
 
@@ -277,14 +257,14 @@ const AdminHome = () => {
 
       return {
         _id,
-        fullName,
-        'phone number': phoneNumber,
-        'order date': convertTimeStringToDate(order_date),
-        total: convertVND(total),
-        status: <Status status={status as StatusType} />,
-        action: (
+        Tên: fullName,
+        'Số điện thoại': phoneNumber,
+        'ngày đặt': convertTimeStringToDate(order_date),
+        'tổng tiền': convertVND(total),
+        'trạng thái': <Status status={status as StatusType} />,
+        '': (
           <Button
-            label="more"
+            label="Chi tiết"
             size="small"
             variant="info"
             className={styles.btnDetail}
@@ -304,16 +284,29 @@ const AdminHome = () => {
   }, [value]);
 
   // Filter data order
-  const orderDetails = useMemo((): OrderDetailType[] => {
-    const convert = (details || []).map((i) => {
+  const orderDetails = useMemo(() => {
+    const information = {
+      note: '',
+      address: '',
+    };
+
+    const convert = (details || []).map((i, index) => {
+      if (index === 0) {
+        information.note = i.orders.note;
+        information.address = i.orders.address;
+      }
+
       return {
         _id: i._id,
-        productName: i.productId.name,
-        quantity: 2,
+        productName: i.products.name,
+        quantity: i.quantity,
       };
     });
 
-    return convert;
+    return {
+      convert,
+      information,
+    };
   }, [details]);
 
   if (isLoading) return <Loading />;
@@ -324,7 +317,7 @@ const AdminHome = () => {
       <div className={styles.content}>
         <div className={styles.filterOrder}>
           <label htmlFor="">
-            <span className={styles.labelText}>start</span>
+            <span className={styles.labelText}>bắt đầu</span>
 
             <input
               type="date"
@@ -339,7 +332,7 @@ const AdminHome = () => {
           </label>
 
           <label htmlFor="">
-            <span className={styles.labelText}>end</span>
+            <span className={styles.labelText}>kết thúc</span>
 
             <input
               type="date"
@@ -354,7 +347,7 @@ const AdminHome = () => {
           </label>
 
           <Button
-            label="clear all"
+            label="đặt lại"
             variant="info"
             disabled={!filter.orderEnd && !filter.orderStart}
             onClick={() =>
@@ -367,9 +360,13 @@ const AdminHome = () => {
           />
         </div>
 
-        <Heading label="Orders" size="lg" className={styles.heading} />
+        <Heading label="Đơn hàng" size="lg" className={styles.heading} />
 
-        <Table data={orders || []} />
+        {orders.length ? (
+          <Table data={orders} />
+        ) : (
+          <ShowMessage message={MESSAGES.NO_DATA} />
+        )}
 
         <div className={commons.pagination}>
           {pagination.map((i, index) => {
@@ -391,7 +388,7 @@ const AdminHome = () => {
         </div>
       </div>
 
-      {Boolean(orderDetails.length) && (
+      {Boolean(orderDetails.convert.length) && (
         <OrderDetail
           data={orderDetails}
           disable={order.disabled}

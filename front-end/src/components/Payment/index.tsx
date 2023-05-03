@@ -9,33 +9,35 @@ import {
   FormEvent,
   MouseEvent,
   useCallback,
-  useContext,
   useState,
 } from 'react';
 
 // Components
-import { Button, Heading } from 'components/commons';
+import { Button, Heading, Input } from 'components/commons';
 
 // Helpers
 import { convertVND, validate } from 'helpers';
 
 // Contexts
-import { NotificationContext } from 'contexts/Notification/context';
-
+import { MESSAGES, REGEXPS } from '@constants';
 type PaymentProps = {
   currentTotal: number;
-  handlePayment: (_address: Address, _note: string) => void;
+  handlePayment: (
+    _address: Address,
+    _note: string,
+    _phoneNumber: string
+  ) => void;
   onClose: (_e?: MouseEvent) => void;
 };
 
 const Payment = (props: PaymentProps) => {
   const { currentTotal, handlePayment, onClose } = props;
-
-  const { setNotification } = useContext(NotificationContext);
+  // const { setNotification } = useContext(NotificationContext);
   const [state, setState] = useState<{
     address: Address;
     addressDetail: string;
     note: string;
+    phoneNumber: string;
   }>({
     address: {
       name: '',
@@ -43,10 +45,14 @@ const Payment = (props: PaymentProps) => {
     },
     note: '',
     addressDetail: '',
+    phoneNumber: '',
   });
+  const [errorField, setErrorField] = useState<{ [key: string]: string }>({});
 
   const handleChange = useCallback(
-    (e: ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) => {
+    (
+      e: ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>
+    ) => {
       const element = e.target;
       const { name, value } = element;
 
@@ -76,14 +82,27 @@ const Payment = (props: PaymentProps) => {
     async (e: FormEvent) => {
       e.preventDefault();
 
-      const error = validate({ object: state.address });
+      const obj: {
+        [key: string]: string | number;
+      } = {
+        ...state.address,
+        addressDetail: state.addressDetail,
+      };
 
-      if (error.isError) {
-        return setNotification({
-          message: 'Please select a address and enter your address details',
-          title: 'Error',
-          type: 'error',
-        });
+      if (state.phoneNumber) obj.phoneNumber = state.phoneNumber;
+
+      const { isError, fields } = validate({
+        object: obj,
+        regexp: {
+          phoneNumber: {
+            regexp: REGEXPS.PHONE,
+            message: MESSAGES.PHONE_FORMAT,
+          },
+        },
+      });
+
+      if (isError) {
+        return setErrorField(fields);
       }
 
       await handlePayment(
@@ -91,7 +110,8 @@ const Payment = (props: PaymentProps) => {
           name: state.addressDetail,
           fee: state.address.fee,
         },
-        state.note
+        state.note,
+        state.phoneNumber
       );
 
       setState({
@@ -101,6 +121,7 @@ const Payment = (props: PaymentProps) => {
         },
         note: '',
         addressDetail: '',
+        phoneNumber: '',
       });
       onClose();
     },
@@ -116,47 +137,71 @@ const Payment = (props: PaymentProps) => {
         onSubmit={onSubmit}
         onClick={(e: MouseEvent) => e.stopPropagation()}
       >
-        <Heading label="Payment" size="xl" className={styles.heading} />
+        <Heading label="Thanh toán" size="xl" className={styles.heading} />
         <div className={styles.address}>
-          <div className={styles.wrapper}>
+          <div className={errorField.name && styles.error}>
+            {errorField.name && <span>{errorField.name}</span>}
             <select
               name="address"
               value={`${state.address.fee}-${state.address.name}`}
               className={styles.addressSelect}
               onChange={handleChange}
             >
-              <option value="">---- Address ----</option>
+              <option value="">---- Chọn địa chỉ ----</option>
               {address.map((i, index) => (
                 <option value={`${i.fee}-${i.name}`} key={index}>
                   {i.name}
                 </option>
               ))}
             </select>
-
-            <p className={styles.total}>
-              <span>Total:</span>
-              <span className={styles.value}>
-                {convertVND(currentTotal + state.address.fee)}
-              </span>
-            </p>
           </div>
+          <div
+            className={
+              errorField.phoneNumber
+                ? `${styles.phoneNumber} ${styles.error}`
+                : styles.phoneNumber
+            }
+            data-error={errorField.phoneNumber}
+          >
+            <Input
+              type="number"
+              placeholder="Nhập số điện thoại..."
+              name="phoneNumber"
+              value={state.phoneNumber}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
 
+        <div className={styles.areaWrapper}>
+          <div
+            className={`${errorField.name && styles.error} ${styles.pseudo}`}
+          >
+            {errorField.name && <span>{errorField.name}</span>}
+            <textarea
+              className={styles.addressDetail}
+              data-error={errorField.addressDetail}
+              value={state.addressDetail}
+              name="addressDetail"
+              placeholder="Địa chỉ cụ thể..."
+              onChange={handleChange}
+            ></textarea>
+          </div>
           <textarea
-            value={state.addressDetail}
-            name="addressDetail"
-            placeholder="Enter address.."
-            className={styles.addressDetail}
+            name="note"
+            placeholder="Ghi chú..."
+            value={state.note}
+            className={styles.note}
             onChange={handleChange}
           ></textarea>
         </div>
 
-        <textarea
-          name="note"
-          placeholder="Enter note.."
-          value={state.note}
-          className={styles.note}
-          onChange={handleChange}
-        ></textarea>
+        <p className={styles.total}>
+          <span>Total:</span>
+          <span className={styles.value}>
+            {convertVND(currentTotal + state.address.fee)}
+          </span>
+        </p>
 
         <div className={styles.action}>
           <Button type="submit" label="Done" variant="success" />

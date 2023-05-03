@@ -9,7 +9,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useFetch, useStore } from 'hooks';
+import { useStore } from 'hooks';
 import useSWR from 'swr';
 
 // HOCs
@@ -21,7 +21,7 @@ import { Loading, Status, Table } from 'components';
 import AddProduct, { AddProductType } from 'components/AddProduct';
 
 // Constants
-import { ENDPOINT, MESSAGES, STORE_KEY } from '@constants';
+import { ENDPOINT, MESSAGES, STORE_KEY, TITLE } from '@constants';
 
 // Styles
 import styles from 'pages/Admin/Product/index.module.css';
@@ -59,8 +59,10 @@ const ProductPage = () => {
   const {
     data = [],
     isLoading,
-    setData,
-  } = useFetch<Partial<Product>[]>(ENDPOINT.PRODUCT, configs);
+    mutate,
+  } = useSWR<Partial<Product>[]>(ENDPOINT.PRODUCT, {
+    fetcher: (endpoint: string) => get(endpoint, configs),
+  });
 
   // Categories
   const { data: categories = [] } = useSWR<Category[]>(ENDPOINT.CATEGORIES);
@@ -92,6 +94,20 @@ const ProductPage = () => {
 
   // Check if upload images
   const [isUpload, setIsUpload] = useState(false);
+
+  // Filter products by name
+  const filter = useMemo(() => {
+    const result = (data || []).filter((product) => {
+      return (
+        (product?.categoryId || '')
+          .toLowerCase()
+          .includes(search.categoryId.toLowerCase()) &&
+        (product?.name || '').toLowerCase().includes(search.name.toLowerCase())
+      );
+    });
+
+    return result;
+  }, [data, search]);
 
   // ------------------- HANDLER ----------------
 
@@ -138,16 +154,6 @@ const ProductPage = () => {
         isAdd: false,
       }));
 
-      setData((prev) => {
-        const data = {
-          ...product,
-          price: +product.price,
-          _id: '',
-        };
-
-        return [...(prev || []), { ...data }];
-      });
-
       await post(ENDPOINT.PRODUCT, payload, configs);
     } catch (error) {
       const { message } = error as AxiosError;
@@ -173,97 +179,117 @@ const ProductPage = () => {
           price: +(detail?.price || '0'),
         } as Product);
 
-        setData([...data]);
         setDetail(undefined);
         setNotification({
-          title: 'Update',
-          message: 'Update successful',
+          title: TITLE.UPDATE,
+          message: MESSAGES.UPDATE_SUCCESS,
           type: 'success',
         });
-        await patch(`${ENDPOINT.PRODUCT}/${id}`, detail, configs);
+
+        mutate(
+          async () => await patch(`${ENDPOINT.PRODUCT}/${id}`, detail, configs),
+          {
+            optimisticData: () => {
+              filter.splice(index, 1, {
+                ...detail,
+                price: detail ? +detail.price : 0,
+              } as Product);
+
+              return [...filter];
+            },
+            populateCache: false,
+            revalidate: false,
+          }
+        );
       }
     } catch (error) {
-      const { message } = error as AxiosError;
-
-      return setNotification({
-        message: message,
-        title: 'Error',
-        type: 'error',
-      });
+      throw error as AxiosError;
     }
-  }, [detail]);
+  }, [detail, filter]);
 
   // Handle delete product
   const deleteProduct = useCallback(async () => {
     const id = detail?._id;
 
     try {
-      if (data) {
-        const index = data?.findIndex((i) => i._id === id);
+      const index = data?.findIndex((i) => i._id === id);
 
-        data?.splice(index, 1, {
-          ...detail,
-          isActive: false,
-        } as Product);
+      data?.splice(index, 1, {
+        ...detail,
+        isActive: false,
+      } as Product);
 
-        setData([...data]);
-        setDetail(undefined);
-        setNotification({
-          title: 'Deleted',
-          message: 'Delete successful',
-          type: 'success',
-        });
-        await remove(`${ENDPOINT.PRODUCT}/${id}`, configs);
-      }
-    } catch (error) {
-      const { message } = error as AxiosError;
+      console.log(id);
 
-      return setNotification({
-        message: message,
-        title: 'Error',
-        type: 'error',
+      setDetail(undefined);
+      setNotification({
+        title: TITLE.DEL,
+        message: 'Xóa thành công',
+        type: 'success',
       });
+
+      mutate(async () => await remove(`${ENDPOINT.PRODUCT}/${id}`, configs), {
+        optimisticData: () => {
+          filter.splice(index, 1, {
+            ...detail,
+            isActive: false,
+          } as Product);
+
+          return [...filter];
+        },
+        populateCache: false,
+        revalidate: false,
+      });
+    } catch (error) {
+      throw error as AxiosError;
     }
-  }, [detail]);
+  }, [detail, filter]);
 
   // Update active product
   const activeProduct = useCallback(async () => {
     const id = detail?._id;
 
     try {
-      if (data) {
-        const index = data?.findIndex((i) => i._id === id);
+      const index = filter.findIndex((i) => i._id === id);
 
-        data?.splice(index, 1, {
-          ...detail,
-          isActive: true,
-        } as Product);
+      filter.splice(index, 1, {
+        ...detail,
+        isActive: true,
+      } as Product);
 
-        setData([...data]);
-        setDetail(undefined);
-        setNotification({
-          title: 'Deleted',
-          message: 'Delete successful',
-          type: 'success',
-        });
-        await patch(
-          `${ENDPOINT.PRODUCT}/${id}`,
-          {
-            isActive: true,
-          },
-          configs
-        );
-      }
-    } catch (error) {
-      const { message } = error as AxiosError;
-
-      return setNotification({
-        message: message,
-        title: 'Error',
-        type: 'error',
+      setDetail(undefined);
+      setNotification({
+        title: TITLE.UPDATE,
+        message: MESSAGES.UPDATE_SUCCESS,
+        type: 'success',
       });
+
+      mutate(
+        async () =>
+          await patch(
+            `${ENDPOINT.PRODUCT}/${id}`,
+            {
+              isActive: true,
+            },
+            configs
+          ),
+        {
+          optimisticData: (filter = []) => {
+            filter?.splice(index, 1, {
+              ...detail,
+              isActive: true,
+            } as Product);
+
+            return [...filter];
+          },
+          populateCache: false,
+          revalidate: false,
+        }
+      );
+    } catch (error) {
+      throw error as AxiosError;
     }
-  }, [detail]);
+  }, [detail, filter]);
 
   // Change product value
   const changeData = <T,>(e: Change, callback: Dispatch<SetStateAction<T>>) => {
@@ -311,20 +337,6 @@ const ProductPage = () => {
 
   // ---------------- CONVERTS ----------------
 
-  // Filter products by name
-  const filter = useMemo(() => {
-    const result = (data || []).filter((product) => {
-      return (
-        (product?.categoryId || '')
-          .toLowerCase()
-          .includes(search.categoryId.toLowerCase()) &&
-        (product?.name || '').toLowerCase().includes(search.name.toLowerCase())
-      );
-    });
-
-    return result;
-  }, [data, search]);
-
   // Convert data table
   const rows = useMemo(() => {
     const result = filter.map((row) => {
@@ -332,11 +344,11 @@ const ProductPage = () => {
 
       return {
         _id,
-        image: <img src={imageURL} className={styles.productPhoto} />,
-        name,
-        price: convertVND(price || 0),
-        active: <Status status={isActive ? 4 : 5} />,
-        action: (
+        '': <img src={imageURL} className={styles.productPhoto} />,
+        'Tên sản phẩm': name,
+        'giá tiền': convertVND(price || 0),
+        'trạng thái': <Status status={isActive ? 4 : 5} />,
+        ' ': (
           <Button
             label="more"
             size="small"

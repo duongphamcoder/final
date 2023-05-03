@@ -1,6 +1,5 @@
 import { Status } from '../constants/index.js';
 import { getMessage } from '../helpers/index.js';
-import CategoriesModel from '../models/category.js';
 import { ProductModel } from '../models/index.js';
 
 /**
@@ -30,26 +29,16 @@ const handleGetProducts = async (id) => {
 
 /**
  * Lấy ra sản phẩm theo categories
- * @param {*} category_name
+ * @param {*} id
  * @returns
  */
-const handleGetProductsByCategory = async (category_name) => {
+const handleGetProductsByCategory = async (id) => {
   try {
-    const category = await CategoriesModel.findOne({
-      name: category_name,
-      deleted: false,
+    const products = await ProductModel.find({
+      categoryId: id,
+      isActive: true,
     });
-
-    if (category) {
-      const products = await ProductModel.find({
-        categoryId: category.id,
-        isActive: true,
-      });
-
-      return getMessage(Status.success, products);
-    }
-
-    return getMessage(Status.success, []);
+    return getMessage(Status.success, products || []);
   } catch (error) {
     const { message } = new Error(error);
 

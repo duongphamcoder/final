@@ -9,17 +9,45 @@ import mongoose from 'mongoose';
 
 const handleGetOrderById = async (oid) => {
   try {
-    const orderDetails = await OrderDetailModel.find({ orderId: oid })
-      .populate({
-        path: 'productId',
-        select: {
-          name: 1,
+    // const orderDetails = await OrderDetailModel.find({ orderId: oid })
+    //   .populate({
+    //     path: 'productId',
+    //     select: {
+    //       name: 1,
+    //     },
+    //   })
+    //   .select({
+    //     productId: 1,
+    //     quantity: 1,
+    //   });
+
+    const orderDetails = await OrderDetailModel.aggregate([
+      {
+        $match: {
+          orderId: mongoose.Types.ObjectId(oid),
         },
-      })
-      .select({
-        productId: 1,
-        quantity: 1,
-      });
+      },
+      {
+        $lookup: {
+          from: 'orders',
+          localField: 'orderId',
+          foreignField: '_id',
+          as: 'orders',
+        },
+      },
+      { $unwind: '$orders' },
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'productId',
+          foreignField: '_id',
+          as: 'products',
+        },
+      },
+      {
+        $unwind: '$products',
+      },
+    ]);
 
     return getMessage(Status.success, orderDetails);
   } catch (error) {
@@ -57,8 +85,8 @@ const handlePayment = async ({ user_id, ...rest }) => {
       userId: user_id,
       order_date: new Date(),
       total,
-      ...rest,
       ...user._doc,
+      ...rest,
     });
 
     const { id: orderId } = await order.save();

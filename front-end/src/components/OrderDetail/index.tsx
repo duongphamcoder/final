@@ -7,15 +7,15 @@ import { Button, ButtonProps, Heading } from 'components/commons';
 // Styles
 import styles from 'components/OrderDetail/index.module.css';
 import container from 'styles/commons/index.module.css';
+import { Order, OrderDetail, Product } from 'types';
 
-export type OrderDetailType = {
-  _id: string;
-  productName: string;
-  quantity: number;
+export type OrderDetailType = OrderDetail & {
+  orders: Order;
+  products: Product;
 };
 
 type OrderDetailProps = {
-  data: OrderDetailType[];
+  data: any;
   disable?: boolean;
   onPreparing?: (_event: MouseEvent) => void;
   onDelivering?: (_event: MouseEvent) => void;
@@ -23,9 +23,9 @@ type OrderDetailProps = {
   onClose?: (_event: MouseEvent) => void;
 };
 
-const OrderDetail = (props: OrderDetailProps) => {
+const OrderDetailCP = (props: OrderDetailProps) => {
   const {
-    data,
+    data: { convert, information },
     disable = false,
     onPreparing,
     onDelivering,
@@ -57,7 +57,21 @@ const OrderDetail = (props: OrderDetailProps) => {
         onClick={(e: MouseEvent) => e.stopPropagation()}
       >
         <Heading label="Order detail" size="xl" className={styles.heading} />
-        <Table data={data} className={styles.table} />
+        <Table data={convert} className={styles.table} />
+
+        <div className={styles.information}>
+          <textarea
+            className={styles.address}
+            value={information.address}
+            disabled
+          ></textarea>
+          <textarea
+            className={styles.note}
+            value={information.note}
+            disabled
+            placeholder="Ghi chú...."
+          ></textarea>
+        </div>
 
         {!disable && (
           <div className={styles.action}>
@@ -71,4 +85,4 @@ const OrderDetail = (props: OrderDetailProps) => {
   );
 };
 
-export default OrderDetail;
+export default OrderDetailCP;

@@ -20,22 +20,25 @@ import styles from './index.module.css';
 import { Banner, Cart } from 'assets/images';
 
 // Variables
-import { ENDPOINT, MESSAGES, STORE_KEY } from '@constants';
+import { ENDPOINT, MESSAGES, STORE_KEY, TITLE } from '@constants';
 
 // Services
+import { AxiosError } from 'axios';
 import { post } from 'services';
 
 // Contexts
 import { UserContext } from 'contexts/User/context';
+import { NotificationContext } from 'contexts/Notification/context';
 
 // Helpers
 import { convertVND } from 'helpers';
 
 const Products = () => {
   const { isUser, openForm } = useContext(UserContext);
+  const { setNotification } = useContext(NotificationContext);
   const { category } = useParams();
   const { data, isLoading, error } = useSWR<Product[]>(
-    `${ENDPOINT.PRODUCT_BY_CATEGORIES}/${category?.replaceAll('-', ' ')}`
+    `${ENDPOINT.PRODUCT_BY_CATEGORIES}/${category}`
   );
   const [isShowCart, setIsShowCart] = useState(false);
   const debounce = useDebounce();
@@ -47,6 +50,12 @@ const Products = () => {
 
   const addToCart = useCallback(async (_id: string) => {
     try {
+      setNotification({
+        message: MESSAGES.ADD_SUCCESS,
+        title: TITLE.ADD,
+        type: 'success',
+      });
+
       await post<{
         productId: string;
         quantity: number;
@@ -64,7 +73,7 @@ const Products = () => {
         }
       );
     } catch (err) {
-      console.log(err);
+      throw err as AxiosError;
     }
   }, []);
 

@@ -30,7 +30,7 @@
   background-color: var(--success-color);
 }
 
-.status.deactive {
+.status.deactivated {
   color: white;
   background-color: var(--primary-color);
 }

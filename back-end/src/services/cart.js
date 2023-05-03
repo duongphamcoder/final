@@ -43,9 +43,9 @@ const handleAddToCart = async (userId, productId, quantity) => {
       quantity,
     });
 
-    await cart.save();
+    const data = await cart.save();
 
-    return getMessage(Status.success, {});
+    return getMessage(Status.success, data);
   } catch (error) {
     const { message } = new Error(error);
 

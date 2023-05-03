@@ -12,11 +12,7 @@ UserRoutes.get('/admin', authController.verifyAdmin, usersController.getUsers);
 
 UserRoutes.patch('/', authController.verifyToken, usersController.updateUser);
 
-UserRoutes.patch(
-  '/password/:id',
-  authController.verifyToken,
-  usersController.updatePasswordUser
-);
+UserRoutes.patch('/password/:id', usersController.updatePasswordUser);
 
 UserRoutes.patch(
   '/:id',

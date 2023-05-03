@@ -23,7 +23,22 @@
 }
 
 .table td:nth-child(2) {
-  text-align: center;
+  text-align: left;
+}
+
+.information {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.address,
+.note {
+  flex: 1;
+  height: 150px;
+  border-radius: 5px;
+  resize: none;
+  padding: 10px;
 }
 
 .action {

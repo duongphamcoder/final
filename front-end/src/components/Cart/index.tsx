@@ -44,7 +44,7 @@ const CartComponent = ({ onClose }: CartProps) => {
       token: STORE_KEY.TOKEN,
     },
   });
-  const [isPayment, setIsPayment] = useState(!false);
+  const [isPayment, setIsPayment] = useState(false);
 
   const debounce = useDebounce();
 
@@ -98,23 +98,26 @@ const CartComponent = ({ onClose }: CartProps) => {
   }, []);
 
   const payment = useCallback(
-    async (address: Address, note: string) => {
+    async (address: Address, note: string, phoneNumber = '') => {
       try {
         setData((prev) => prev?.filter((c) => !c.active));
-        await post<Partial<Convert<Order>>>(
-          ENDPOINT.ORDER,
-          {
-            address: address.name,
-            note,
-            total: value.total + address.fee,
+
+        const payload: {
+          [key: string]: number | string;
+        } = {
+          address: address.name,
+          note,
+          total: value.total + address.fee,
+        };
+
+        if (phoneNumber) payload.phoneNumber = phoneNumber;
+
+        await post<Partial<Convert<Order>>>(ENDPOINT.ORDER, payload, {
+          headers: {
+            Authorization: `Bearer ${getValueKey()}`,
+            token: STORE_KEY.TOKEN,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${getValueKey()}`,
-              token: STORE_KEY.TOKEN,
-            },
-          }
-        );
+        });
       } catch (error) {
         throw error as AxiosError;
       }

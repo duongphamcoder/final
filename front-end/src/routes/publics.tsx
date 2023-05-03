@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router-dom';
 // Pages
 import { HomeUser, Products } from 'pages/Users';
 import { Wrapper } from 'pages/commons';
+import { ROUTES } from '@constants';
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -14,7 +15,7 @@ export const publicRoutes: RouteObject[] = [
         element: <HomeUser />,
       },
       {
-        path: ':category',
+        path: `/${ROUTES.MENU}/:category`,
         element: <Products />,
       },
     ],
