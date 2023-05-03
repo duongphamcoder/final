@@ -1,0 +1,26 @@
+.mainTable {
+  width: 100%;
+  border-radius: 5px;
+  font-family: var(--primary-font);
+  box-shadow: 0 0 0 1px var(--secondary-color);
+}
+
+.tableHead,
+.row {
+  border-bottom: 1px solid;
+}
+
+.tableContent {
+  padding: 10px 0;
+}
+
+.headItem {
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.headItem,
+.colItem {
+  padding: 10px;
+}

@@ -1,0 +1,58 @@
+@import url(./animation.module.css);
+
+.notification {
+  width: 512px;
+  position: fixed;
+  bottom: 28px;
+  right: -100%;
+  z-index: 99999;
+  display: flex;
+  box-shadow: 0 0 0 1px var(--light-gray);
+  border-radius: 15px;
+  font-family: var(--primary-font);
+  padding: 15px;
+
+}
+
+.notification.sideIn {
+  animation: notificationsSideIn 1s linear forwards;
+}
+
+.notification.sideOut {
+  animation: notificationsSideIn 1s linear forwards alternate-reverse;
+}
+
+.notification.success {
+  background-color: var(--toast-success-color);
+}
+
+.notification.warning {
+  background-color: var(--toast-warning-color);
+}
+
+.notification.error {
+  background-color: var(--toast-error-color);
+}
+
+.notification.info {
+  background-color: var(--toast-info-color);
+}
+
+.content {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.message {
+  padding: 10px 0 0;
+}
+
+.notification .icon {
+  width: 20px;
+  align-items: flex-start;
+  background-color: transparent;
+  cursor: pointer;
+  padding: unset;
+}
+
+

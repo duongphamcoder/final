@@ -1,0 +1,24 @@
+.input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 20px;
+  background-color: var(--gray-color);
+  color: var(--secondary-text-color);
+  font-family: var(--primary-font);
+  padding: 10px 20px;
+}
+
+.input .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.input .value {
+  flex: 1;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  padding: 5px;
+}

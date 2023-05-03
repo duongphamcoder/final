@@ -1,0 +1,61 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border-radius: 30px;
+  background-color: white;
+  text-decoration: none;
+  color: var(--primary-color);
+  font-family: var(--primary-font);
+  padding: 40px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.cardItem:first-child {
+  width: 215px;
+}
+
+.cardItem:last-child {
+  flex: 1;
+}
+
+.heading {
+  font-weight: 900;
+  text-align: center;
+  color: var(--primary-text-color);
+}
+
+.price {
+  font-size: 24px;
+  text-align: center;
+  font-weight: 700;
+  padding-bottom: 20px;
+}
+
+.action {
+  display: flex;
+  gap: 10px;
+  padding: 20px 0;
+}
+
+.time {
+  font-size: 22px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.image {
+  width: 100%;
+  height: 350px;
+  object-fit: contain;
+  background-color: white;
+  border-radius: 7px;
+  margin-top: 10px;
+}
+
+.image.fake {
+  width: 100%;
+  height: 116px;
+}

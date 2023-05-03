@@ -1,0 +1,77 @@
+.addProduct {
+  width: 750px;
+  min-height: 400px;
+  font-family: var(--primary-font);
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.formItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.formItem:nth-child(2) {
+  align-items: flex-start;
+}
+
+.input {
+  flex: 1;
+  box-shadow: 0 5px 10px -3px var(--light-gray);
+}
+
+.select {
+  flex: 1;
+  text-transform: uppercase;
+  padding: 10px 20px;
+}
+
+.file {
+  width: 150px;
+  height: 200px;
+  background-color: var(--light-gray);
+  border-radius: 8px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  font-size: 14px;
+  box-shadow: 0 5px 10px -3px var(--light-gray);
+}
+
+.showImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.spinner {
+  position: relative;
+}
+
+.spinner::after {
+  position: absolute;
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 3px solid black;
+  border-left-color: transparent;
+  border-radius: 100%;
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

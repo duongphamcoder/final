@@ -1,0 +1,21 @@
+.heading {
+  padding: 20px 0;
+}
+
+.productPhoto {
+  width: 100px;
+}
+
+table.table tr {
+  display: grid;
+  grid-template-columns: 1fr 1fr 3fr 1fr;
+  gap: 20px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+table.table td {
+  text-align: left;
+  line-height: 25px;
+  box-sizing: border-box;
+}

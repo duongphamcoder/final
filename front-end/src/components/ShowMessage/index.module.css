@@ -1,0 +1,7 @@
+.messageWrapper {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--primary-font);
+}

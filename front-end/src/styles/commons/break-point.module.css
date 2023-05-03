@@ -1,0 +1,21 @@
+/* X-small : Mặc định */
+
+/* Small */
+@media (min-width: 576px) and (max-width: 767px) {
+}
+
+/* Medium */
+@media (min-width: 768px) and (max-width: 991px) {
+}
+
+/* Large */
+@media (min-width: 992px) and (max-width: 1199px) {
+}
+
+/* Extra-large */
+@media (min-width: 1200px) and (max-width: 1399px) {
+}
+
+/* Extra-extra-large */
+@media (min-width: 1400px) {
+}

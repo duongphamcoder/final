@@ -1,0 +1,41 @@
+.statistical {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.content {
+  margin: 20px 0;
+}
+
+.btnDetail {
+  font-weight: 600;
+}
+
+.heading {
+  text-align: center;
+  padding: 15px 0 20px;
+}
+
+.filterOrder {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.filterOrder input {
+  padding: 10px 20px;
+  border-radius: 5px;
+  outline: none;
+  font-family: var(--primary-font);
+}
+
+.labelText {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 600;
+  padding-right: 6px;
+  font-family: var(--primary-font);
+  text-transform: capitalize;
+}

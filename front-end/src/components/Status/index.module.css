@@ -1,0 +1,36 @@
+.status {
+  width: fit-content;
+  border-radius: 10px 5px 10px 3px;
+  font-weight: 600;
+  padding: 5px;
+  box-shadow: 0 5px 10px -2px var(--light-gray);
+}
+
+.status.pending {
+  background-color: var(--cool-color);
+  color: white;
+}
+
+.status.complete {
+  color: white;
+  background-color: var(--success-color);
+}
+
+.status.delivering {
+  background-color: var(--warning-color);
+}
+
+.status.preparing {
+  color: white;
+  background-color: var(--info-color);
+}
+
+.status.active {
+  color: white;
+  background-color: var(--success-color);
+}
+
+.status.deactive {
+  color: white;
+  background-color: var(--primary-color);
+}

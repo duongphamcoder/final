@@ -1,0 +1,10 @@
+@keyframes notificationsSideIn {
+ 0% {
+  right: -50%;
+ }
+
+90%, 100% {
+  right: 28px;
+ }
+}
+

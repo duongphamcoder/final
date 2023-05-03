@@ -1,0 +1,24 @@
+.mainFooter {
+  font-family: var(--primary-font);
+  background-color: var(--primary-color);
+  padding: 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: self-start;
+  gap: 30px;
+}
+
+.logo {
+  width: 100%;
+}
+
+.information {
+  color: white;
+}
+
+.infoItem {
+  line-height: 25px;
+}

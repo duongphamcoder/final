@@ -1,0 +1,24 @@
+.heading {
+  font-family: var(--primary-font);
+  font-weight: 700;
+}
+
+.heading.sm {
+  font-size: 15px;
+  line-height: 26.4px;
+}
+
+.heading.md {
+  font-size: 18px;
+  line-height: 28.8px;
+}
+
+.heading.lg {
+  font-size: 26px;
+  line-height: 43.2px;
+}
+
+.heading.xl {
+  font-size: 32px;
+  line-height: 51px;
+}

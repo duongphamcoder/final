@@ -1,0 +1,7 @@
+/* Base styles */
+@import url(./rests.module.css);
+@import url(./fonts.module.css);
+@import url(./variables.module.css);
+
+/* Common styles */
+@import url(./commons/index.module.css);

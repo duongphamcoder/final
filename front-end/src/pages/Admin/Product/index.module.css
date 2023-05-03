@@ -1,0 +1,39 @@
+.action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.inputFilter {
+  width: 350px;
+  box-shadow: 0 5px 10px -4px #ccc;
+}
+
+.categories {
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.productPhoto {
+  width: 100px;
+}
+
+table.table tr {
+  display: grid;
+  grid-template-columns: 150px 3fr 1fr 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+table.table td {
+  line-height: 25px;
+  box-sizing: border-box;
+}

@@ -1,0 +1,24 @@
+:root {
+  /* Fonts */
+  --primary-font: 'Roboto Mono', monospace;
+
+  /* Colors */
+  --primary-color: #c81f34;
+  --secondary-color: #161616;
+  --warning-color: #fac437;
+  --success-color: #28a745;
+  --gray-color: #f4f4f4;
+  --light-gray: #cccc;
+  --info-color: #3399ff;
+  --cool-color: #321fdb;
+
+  /* Texts */
+  --primary-text-color: #161616;
+  --secondary-text-color: #ce2026;
+
+  /* Toasts */
+  --toast-success-color: rgb(106, 200, 60);
+  --toast-error-color: rgb(200, 60, 60);
+  --toast-warning-color: rgb(200, 169, 60);
+  --toast-info-color: rgb(60, 150, 200);
+}

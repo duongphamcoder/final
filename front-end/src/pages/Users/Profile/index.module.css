@@ -1,0 +1,42 @@
+.profile {
+  font-family: var(--primary-font);
+}
+
+.information {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.item {
+  position: relative;
+}
+
+.item:last-child {
+  display: flex;
+  justify-content: center;
+}
+
+.field {
+  display: block;
+  padding-bottom: 10px;
+}
+
+.value {
+  box-shadow: 0 5px 10px -3px silver;
+}
+
+.item.error .value {
+  box-shadow: 0 0 0 1px red, 0 5px 10px -3px silver;
+}
+
+.item.error::after {
+  position: absolute;
+  content: attr(data-error);
+  top: 0;
+  right: 0;
+  font-size: 14px;
+  color: var(--primary-color);
+  font-weight: 600;
+}

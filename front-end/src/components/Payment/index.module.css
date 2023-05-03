@@ -1,0 +1,60 @@
+.payment {
+  width: 60%;
+  /* height: 400px; */
+  background-color: white;
+  border-radius: 5px;
+  font-family: var(--primary-font);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.heading {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.address {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+}
+
+.addressSelect {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.addressDetail {
+  flex: 1;
+  height: 150px;
+}
+
+.addressDetail,
+.note {
+  resize: none;
+  border-radius: 5px;
+  padding: 10px;
+  outline: none;
+}
+
+.note {
+  width: 100%;
+  height: 200px;
+  box-sizing: border-box;
+}
+
+.action {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0 0;
+}
+
+.total {
+  padding: 20px 0;
+}
+
+.value {
+  padding: 0 5px;
+  color: var(--primary-color);
+}

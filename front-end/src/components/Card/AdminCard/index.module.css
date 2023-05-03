@@ -1,0 +1,37 @@
+.card {
+  min-height: 150px;
+  border-radius: 5px;
+  font-family: var(--primary-font);
+  color: white;
+  padding: 10px;
+  box-shadow: 0 13px 10px -3px var(--light-gray);
+}
+
+.card:nth-child(1) {
+  background: var(--info-color)
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+}
+
+.card:nth-child(2) {
+  background: var(--cool-color)
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+}
+
+.card:nth-child(3) {
+  background: var(--warning-color)
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
+}
+
+.heading {
+  text-transform: uppercase;
+}
+
+.value {
+  font-size: 30px;
+  padding: 20px;
+}
+
+.filter {
+  padding: 10px 20px;
+  border-radius: 5px;
+}

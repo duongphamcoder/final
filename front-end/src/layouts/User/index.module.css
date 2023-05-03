@@ -1,0 +1,16 @@
+.wrapper {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.children {
+  height: 580px;
+  border: 2px solid var(--primary-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 5px 10px -3px silver;
+}

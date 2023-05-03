@@ -1,0 +1,30 @@
+.form {
+  width: 60%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--primary-font);
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.label {
+  display: inline-block;
+  text-transform: capitalize;
+  padding: 10px 0;
+}
+
+.action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
